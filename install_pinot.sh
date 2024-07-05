@@ -114,8 +114,7 @@ json_input=$(jq -n \
       }
     ],
 	labels: {
-      "alpha.eksctl.io/nodegroup-name": "pinot",
-      "example-label-key": "pinot"
+      "alpha.eksctl.io/nodegroup-name": "pinot"
     }
   }')
 
@@ -148,8 +147,7 @@ json_input=$(jq -n \
       }
     ],
 	labels: {
-      "alpha.eksctl.io/nodegroup-name": "pinot",
-      "example-label-key": "zookeeper"
+      "alpha.eksctl.io/nodegroup-name": "zookeeper"
     }
   }')
 
@@ -325,7 +323,7 @@ kubectl rollout status deployment/aws-load-balancer-controller -n kube-system --
 
 
 				 
-curl -O https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.yaml
+curl -O https://raw.githubusercontent.com/stationops/apache/main/controller-ingress.yaml
 envsubst < controller-ingress.yaml | kubectl apply -f -
 		
 		
@@ -333,7 +331,7 @@ curl -O https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.
 envsubst < broker-ingress.yaml | kubectl apply -f -
 
 
-curl -O https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.yaml				  
+curl -O https://raw.githubusercontent.com/stationops/apache/main/server-netty-ingress.yaml				  
 envsubst < server-netty-ingress.yaml | kubectl apply -f -
 
 

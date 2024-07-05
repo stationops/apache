@@ -8,6 +8,7 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/subnets: $PRIVATE_SUBNET_IDS
     alb.ingress.kubernetes.io/group.name: $EKS_CLUSTER_NAME
+    alb.ingress.kubernetes.io/healthcheck-path: /health
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 8099}]'
 spec:
   ingressClassName: alb

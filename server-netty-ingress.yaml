@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: pinot-quickstart
+  name: server-netty-$EKS_CLUSTER_NAME
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: $PRIVATE_SUBNET_IDS
+    alb.ingress.kubernetes.io/group.name: pinot-prod
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 8098}]'
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pinot-server
+                port:
+                  number: 8098

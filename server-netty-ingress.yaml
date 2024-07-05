@@ -7,7 +7,7 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/subnets: $PRIVATE_SUBNET_IDS
-    alb.ingress.kubernetes.io/group.name: pinot-prod
+    alb.ingress.kubernetes.io/group.name: $EKS_CLUSTER_NAME
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 8098}]'
 spec:
   ingressClassName: alb

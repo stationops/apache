@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: pinot-quickstart
-  name: server-netty-$EKS_CLUSTER_NAME
+  name: server-admin-$EKS_CLUSTER_NAME
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/target-type: ip

@@ -60,40 +60,124 @@ eksctl create cluster \
 ### Create Node Groups
 ### 
 
-eksctl create nodegroup \
-  --cluster $EKS_CLUSTER_NAME \
-  --name workers \
-  --node-type t3.large \
-  --nodes 2 \
-  --subnet-ids ${PRIVATE_SUBNET_IDS} \
-  --region ${EKS_CLUSTER_REGION} \
-  --nodes-min 1 \
-  --nodes-max 2 \
-  --node-private-networking
+ROLE_NAME="${EKS_CLUSTER_NAME}EKSWorkerNodeRole"
 
-eksctl create nodegroup \
-  --cluster $EKS_CLUSTER_NAME \
-  --name pinot \
-  --node-type t3.xlarge \
-  --nodes 3 \
-  --subnet-ids ${PRIVATE_SUBNET_IDS} \
-  --region ${EKS_CLUSTER_REGION} \
-  --nodes-min 1 \
-  --nodes-max 3 \
-  --node-private-networking
+# Create the IAM role with a trust policy
+aws iam create-role --role-name $ROLE_NAME --assume-role-policy-document '{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}'
+
+# Attach the specified managed policies to the role
+aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+
+role_arn=$(aws iam get-role --role-name $ROLE_NAME --query 'Role.Arn' --output text)
 
 
 
-eksctl create nodegroup \
-  --cluster $EKS_CLUSTER_NAME \
-  --name zookeeper \
-  --node-type t3.xlarge \
-  --nodes 3 \
-  --subnet-ids ${PRIVATE_SUBNET_IDS} \
-  --region ${EKS_CLUSTER_REGION} \
-  --nodes-min 1 \
-  --nodes-max 3 \
-  --node-private-networking
+
+json_subnet_ids=$(echo "$PRIVATE_SUBNET_IDS" | jq -R 'split(",")')
+
+# Create JSON input for aws eks create-nodegroup
+json_input=$(jq -n \
+  --arg clusterName "$EKS_CLUSTER_NAME" \
+  --arg nodegroupName "pinot" \
+  --arg nodeRole "$role_arn" \
+  --argjson subnets "$json_subnet_ids" \
+  '{
+    clusterName: $clusterName,
+    nodegroupName: $nodegroupName,
+	nodeRole: $nodeRole,
+    scalingConfig: {
+      minSize: 1,
+      maxSize: 3,
+      desiredSize: 3
+    },
+    subnets: $subnets,
+    instanceTypes: ["t3.xlarge"],
+    taints: [
+      {
+        key: "group",
+        value: "pinot",
+        effect: "NO_SCHEDULE"
+      }
+    ]
+  }')
+
+# Run the aws eks create-nodegroup command
+aws eks create-nodegroup --cli-input-json "$json_input" --region "$EKS_CLUSTER_REGION"
+
+
+# Create JSON input for aws eks create-nodegroup
+json_input=$(jq -n \
+  --arg clusterName "$EKS_CLUSTER_NAME" \
+  --arg nodegroupName "zookeeper" \
+  --arg nodeRole "$role_arn" \
+  --argjson subnets "$json_subnet_ids" \
+  '{
+    clusterName: $clusterName,
+    nodegroupName: $nodegroupName,
+	nodeRole: $nodeRole,
+    scalingConfig: {
+      minSize: 1,
+      maxSize: 3,
+      desiredSize: 3
+    },
+    subnets: $subnets,
+    instanceTypes: ["t3.xlarge"],
+    taints: [
+      {
+        key: "group",
+        value: "pinot",
+        effect: "NO_SCHEDULE"
+      }
+    ]
+  }')
+
+# Run the aws eks create-nodegroup command
+aws eks create-nodegroup --cli-input-json "$json_input" --region "$EKS_CLUSTER_REGION"
+
+
+
+# Create JSON input for aws eks create-nodegroup
+json_input=$(jq -n \
+  --arg clusterName "$EKS_CLUSTER_NAME" \
+  --arg nodegroupName "workers" \
+  --arg nodeRole "$role_arn" \
+  --argjson subnets "$json_subnet_ids" \
+  '{
+    clusterName: $clusterName,
+    nodegroupName: $nodegroupName,
+	nodeRole: $nodeRole,
+    scalingConfig: {
+      minSize: 1,
+      maxSize: 2,
+      desiredSize: 2
+    },
+    subnets: $subnets,
+    instanceTypes: ["t3.large"],
+    taints: [
+      {
+        key: "group",
+        value: "pinot",
+        effect: "NO_SCHEDULE"
+      }
+    ]
+  }')
+
+# Run the aws eks create-nodegroup command
+aws eks create-nodegroup --cli-input-json "$json_input" --region "$EKS_CLUSTER_REGION"
 
 
 
@@ -207,23 +291,23 @@ eksctl create iamserviceaccount \
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
 
 
-aws iam create-policy \ 
-    --policy-name AWSLoadBalancerControllerIAMPolicy \ 
+aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
     --policy-document file://iam_policy.json
 	
-eksctl create iamserviceaccount \ 
-  --cluster=${EKS_CLUSTER_NAME} \ 
-  --namespace=kube-system \ 
-  --name=aws-load-balancer-controller \ 
-  --role-name AmazonEKSLoadBalancerControllerRole \ 
-  --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \ 
+eksctl create iamserviceaccount \
+  --cluster=${EKS_CLUSTER_NAME} \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
   --approve
 
 helm repo add eks-charts https://aws.github.io/eks-charts
 
 helm repo update eks-charts
 
-helm install aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
+helm upgrade aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
     --namespace kube-system \
     --set clusterName=${EKS_CLUSTER_NAME} \
     --set serviceAccount.create=false \

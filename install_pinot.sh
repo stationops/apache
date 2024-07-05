@@ -2,7 +2,7 @@
 ### Environment variables
 ###
 
-export EKS_CLUSTER_NAME=pinot2-prod
+export EKS_CLUSTER_NAME=pinot3-prod
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="hibtest-test/test-hibtest-vpc"
 export ACCOUNT_ID=005651560631

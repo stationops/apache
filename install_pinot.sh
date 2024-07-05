@@ -204,6 +204,21 @@ eksctl create iamserviceaccount \
 ### Add Load Balancer Routes
 ### 
 
+curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
+
+
+aws iam create-policy \ 
+    --policy-name AWSLoadBalancerControllerIAMPolicy \ 
+    --policy-document file://iam_policy.json
+	
+eksctl create iamserviceaccount \ 
+  --cluster=${EKS_CLUSTER_NAME} \ 
+  --namespace=kube-system \ 
+  --name=aws-load-balancer-controller \ 
+  --role-name AmazonEKSLoadBalancerControllerRole \ 
+  --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \ 
+  --approve
+
 helm repo add eks-charts https://aws.github.io/eks-charts
 
 helm repo update eks-charts

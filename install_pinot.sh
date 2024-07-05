@@ -2,7 +2,7 @@
 ### Environment variables
 ###
 
-export EKS_CLUSTER_NAME=pinot6-prod
+export EKS_CLUSTER_NAME=pinot7-prod
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="hibtest-test/test-hibtest-vpc"
 export ACCOUNT_ID=005651560631
@@ -294,8 +294,8 @@ aws iam create-policy \
 eksctl create iamserviceaccount \
   --cluster=${EKS_CLUSTER_NAME} \
   --namespace=kube-system \
-  --name=aws-load-balancer-controller \
-  --role-name AmazonEKSLoadBalancerControllerRole \
+  --name=aws-load-balancer-controller-${EKS_CLUSTER_NAME} \
+  --role-name AmazonEKSLoadBalancerControllerRole-${EKS_CLUSTER_NAME} \
   --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
   --region ${EKS_CLUSTER_REGION} \
   --approve
@@ -304,25 +304,25 @@ helm repo add eks-charts https://aws.github.io/eks-charts
 
 helm repo update eks-charts
 
-helm install aws-load-balancer-controller1 eks-charts/aws-load-balancer-controller \
+helm install aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
     --namespace kube-system \
     --set clusterName=${EKS_CLUSTER_NAME} \
     --set serviceAccount.create=false \
     --set region=${EKS_CLUSTER_REGION} \
     --set vpcId=${VPC_ID} \
-    --set serviceAccount.name=aws-load-balancer-controller
+    --set serviceAccount.name=aws-load-balancer-controller-${EKS_CLUSTER_NAME}
 
 
 				 
-wget https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.yaml
+curl -O https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.yaml
 envsubst < controller-ingress.yaml | kubectl apply -f -
 		
 		
-wget https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.yaml				  
+curl -O https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.yaml				  
 envsubst < broker-ingress.yaml | kubectl apply -f -
 
 
-wget https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.yaml				  
+curl -O https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.yaml				  
 envsubst < server-netty-ingress.yaml | kubectl apply -f -
 
 

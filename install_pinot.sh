@@ -139,7 +139,7 @@ json_input=$(jq -n \
     taints: [
       {
         key: "group",
-        value: "pinot",
+        value: "zookeeper",
         effect: "NO_SCHEDULE"
       }
     ]
@@ -168,11 +168,7 @@ json_input=$(jq -n \
     subnets: $subnets,
     instanceTypes: ["t3.large"],
     taints: [
-      {
-        key: "group",
-        value: "pinot",
-        effect: "NO_SCHEDULE"
-      }
+      
     ]
   }')
 
@@ -301,13 +297,14 @@ eksctl create iamserviceaccount \
   --name=aws-load-balancer-controller \
   --role-name AmazonEKSLoadBalancerControllerRole \
   --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
+  --region ${EKS_CLUSTER_REGION} \
   --approve
 
 helm repo add eks-charts https://aws.github.io/eks-charts
 
 helm repo update eks-charts
 
-helm upgrade aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
+helm install aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
     --namespace kube-system \
     --set clusterName=${EKS_CLUSTER_NAME} \
     --set serviceAccount.create=false \

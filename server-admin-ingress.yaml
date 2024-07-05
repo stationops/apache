@@ -10,6 +10,7 @@ metadata:
     alb.ingress.kubernetes.io/group.name: $EKS_CLUSTER_NAME
     alb.ingress.kubernetes.io/healthcheck-path: /health
     alb.ingress.kubernetes.io/healthcheck-timeout-seconds: 30
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: 45
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
 spec:
   ingressClassName: alb

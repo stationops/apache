@@ -112,7 +112,11 @@ json_input=$(jq -n \
         value: "pinot",
         effect: "NO_SCHEDULE"
       }
-    ]
+    ],
+	labels: {
+      "alpha.eksctl.io/nodegroup-name": "pinot",
+      "example-label-key": "pinot"
+    }
   }')
 
 # Run the aws eks create-nodegroup command
@@ -142,7 +146,11 @@ json_input=$(jq -n \
         value: "zookeeper",
         effect: "NO_SCHEDULE"
       }
-    ]
+    ],
+	labels: {
+      "alpha.eksctl.io/nodegroup-name": "pinot",
+      "example-label-key": "zookeeper"
+    }
   }')
 
 # Run the aws eks create-nodegroup command
@@ -311,6 +319,9 @@ helm install aws-load-balancer-controller eks-charts/aws-load-balancer-controlle
     --set region=${EKS_CLUSTER_REGION} \
     --set vpcId=${VPC_ID} \
     --set serviceAccount.name=aws-load-balancer-controller-${EKS_CLUSTER_NAME}
+	
+kubectl rollout status deployment/aws-load-balancer-controller -n kube-system --watch
+
 
 
 				 

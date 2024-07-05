@@ -2,7 +2,7 @@
 ### Environment variables
 ###
 
-export EKS_CLUSTER_NAME=pls-prod
+export EKS_CLUSTER_NAME=pinot2-prod
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="hibtest-test/test-hibtest-vpc"
 export ACCOUNT_ID=005651560631
@@ -24,7 +24,12 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-Download eksctl
+
+
+###
+### Download eksctl
+###
+
 
 # for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
 ARCH=amd64
@@ -47,7 +52,7 @@ eksctl create cluster \
 --name ${EKS_CLUSTER_NAME} \
 --version 1.30 \
 --region ${EKS_CLUSTER_REGION} \
---vpc-private-subnets ${PRIVATE_SUBNET_IDS}
+--vpc-private-subnets ${PRIVATE_SUBNET_IDS} \
 --node-private-networking
 
 

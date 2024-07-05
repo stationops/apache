@@ -2,7 +2,7 @@
 ### Environment variables
 ###
 
-export EKS_CLUSTER_NAME=pinot5-prod
+export EKS_CLUSTER_NAME=pinot6-prod
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="hibtest-test/test-hibtest-vpc"
 export ACCOUNT_ID=005651560631
@@ -304,7 +304,7 @@ helm repo add eks-charts https://aws.github.io/eks-charts
 
 helm repo update eks-charts
 
-helm install aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
+helm install aws-load-balancer-controller1 eks-charts/aws-load-balancer-controller \
     --namespace kube-system \
     --set clusterName=${EKS_CLUSTER_NAME} \
     --set serviceAccount.create=false \

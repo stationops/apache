@@ -8,15 +8,9 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/subnets: $PRIVATE_SUBNET_IDS
     alb.ingress.kubernetes.io/group.name: $EKS_CLUSTER_NAME
-<<<<<<< HEAD
     alb.ingress.kubernetes.io/healthcheck-path: /commands
-    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: 30
-    alb.ingress.kubernetes.io/healthcheck-interval-seconds: 45
-=======
-    alb.ingress.kubernetes.io/healthcheck-path: /health
     alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '30'
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: '45'
->>>>>>> ea15cbe6013ed9bf7740595bbfe2d699cf9f4f8f
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 8080}]'
 spec:
   ingressClassName: alb

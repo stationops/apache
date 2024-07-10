@@ -325,39 +325,14 @@ kubectl rollout status deployment/aws-load-balancer-controller -n kube-system --
 
 
 				 
-curl -O https://raw.githubusercontent.com/stationops/apache/main/controller-ingress.yaml
 envsubst < controller-ingress.yaml | kubectl apply -f -
-		
-		
-curl -O https://raw.githubusercontent.com/stationops/apache/main/broker-ingress.yaml				  
+				  
 envsubst < broker-ingress.yaml | kubectl apply -f -
 
-
-curl -O https://raw.githubusercontent.com/stationops/apache/main/server-netty-ingress.yaml				  
+		  
 envsubst < server-netty-ingress.yaml | kubectl apply -f -
-
-curl -O https://raw.githubusercontent.com/stationops/apache/main/server-admin-ingress.yaml				  
+		  
 envsubst < server-admin-ingress.yaml | kubectl apply -f -
 
 
-
-
-### 
-### Test With kafka
-### 
-
-
-helm repo add kafka https://charts.bitnami.com/bitnami
-helm install -n pinot-quickstart kafka kafka/kafka --set replicas=1,zookeeper.image.tag=latest,listeners.client.protocol=PLAINTEXT
-
-
-
-kubectl -n pinot-quickstart exec kafka-controller-0 -- kafka-topics.sh --bootstrap-server kafka-controller-0:9092 --topic flights-realtime --create --partitions 1 --replication-factor 1
-kubectl -n pinot-quickstart exec kafka-controller-0 -- kafka-topics.sh --bootstrap-server kafka-controller-0:9092 --topic flights-realtime-avro --create --partitions 1 --replication-factor 1
-
-rm -rf /var/lib/apt/lists/* && \
-pip install \
-    psycopg2-binary==2.9.1 \
-    pinotdb>=0.3.9 \
-    redis==3.5.3 && \
 

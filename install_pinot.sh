@@ -54,6 +54,7 @@ eksctl create cluster \
 --region ${EKS_CLUSTER_REGION} \
 --vpc-private-subnets ${PRIVATE_SUBNET_IDS} \
 --node-private-networking
+--nodes 0
 
 
 ### 
@@ -333,6 +334,9 @@ envsubst < broker-ingress.yaml | kubectl apply -f -
 
 curl -O https://raw.githubusercontent.com/stationops/apache/main/server-netty-ingress.yaml				  
 envsubst < server-netty-ingress.yaml | kubectl apply -f -
+
+curl -O https://raw.githubusercontent.com/stationops/apache/main/server-admin-ingress.yaml				  
+envsubst < server-admin-ingress.yaml | kubectl apply -f -
 
 
 

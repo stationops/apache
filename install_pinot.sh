@@ -2,7 +2,7 @@
 ### Environment variables
 ###
 
-export EKS_CLUSTER_NAME=pinot9-prod
+export EKS_CLUSTER_NAME=test-gb4-vpc
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="hibtest-test/test-hibtest-vpc"
 export ACCOUNT_ID=005651560631
@@ -52,9 +52,13 @@ eksctl create cluster \
 --name ${EKS_CLUSTER_NAME} \
 --version 1.30 \
 --region ${EKS_CLUSTER_REGION} \
+<<<<<<< HEAD
 --vpc-private-subnets ${PRIVATE_SUBNET_IDS} \
 --node-private-networking
 --nodes 0
+=======
+--vpc-private-subnets ${PRIVATE_SUBNET_IDS}
+>>>>>>> 98066fe05b5729efcb2279ce95846e07dc7e9fec
 
 
 ### 

@@ -3,12 +3,10 @@ kind: Service
 metadata:
   name: zookeeper-admin-service
   labels:
-    app: zookeeper
-    component: admin
+    app.kubernetes.io/component: zookeeper
 spec:
   selector:
-    app: zookeeper
-    component: admin
+    app.kubernetes.io/component: zookeeper
   ports:
     - name: admin
       protocol: TCP

@@ -13,6 +13,7 @@ export PRIVATE_SUBNET_IDS=$(aws ec2 describe-subnets --filters "Name=vpc-id,Valu
 export PRIVATE_SUBNET_IDS=$(echo $PRIVATE_SUBNET_IDS | tr ' ' ',')
 
 
+echo "Private Subnet Ids"
 echo $PRIVATE_SUBNET_IDS
 
 

@@ -13,6 +13,7 @@ export PRIVATE_SUBNET_IDS=$(aws ec2 describe-subnets --filters "Name=vpc-id,Valu
 export PRIVATE_SUBNET_IDS=$(echo $PRIVATE_SUBNET_IDS | tr ' ' ',')
 
 
+echo $PRIVATE_SUBNET_IDS
 
 
 ###
@@ -52,7 +53,6 @@ eksctl create cluster \
 --name ${EKS_CLUSTER_NAME} \
 --version 1.30 \
 --region ${EKS_CLUSTER_REGION} \
---vpc-private-subnets ${PRIVATE_SUBNET_IDS} \
 --vpc-private-subnets ${PRIVATE_SUBNET_IDS} \
 --node-private-networking \
 --nodes 0

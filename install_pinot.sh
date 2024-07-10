@@ -2,9 +2,9 @@
 ### Environment variables
 ###
 
-export EKS_CLUSTER_NAME=test-gb4-vpc
+export EKS_CLUSTER_NAME=pinot
 export EKS_CLUSTER_REGION=us-east-1
-export VPC_NAME="hibtest-test/test-hibtest-vpc"
+export VPC_NAME="gb4-test/test-gb4-vpc"
 export ACCOUNT_ID=005651560631
 export VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${VPC_NAME}" --query "Vpcs[0].VpcId" --output text)
 

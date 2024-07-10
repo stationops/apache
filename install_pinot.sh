@@ -52,8 +52,7 @@ eksctl create cluster \
 --name ${EKS_CLUSTER_NAME} \
 --version 1.30 \
 --region ${EKS_CLUSTER_REGION} \
---vpc-private-subnets ${PRIVATE_SUBNET_IDS} \
---node-private-networking
+--vpc-private-subnets ${PRIVATE_SUBNET_IDS}
 
 
 ### 

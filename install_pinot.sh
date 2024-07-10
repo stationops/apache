@@ -323,16 +323,18 @@ helm install aws-load-balancer-controller eks-charts/aws-load-balancer-controlle
 kubectl rollout status deployment/aws-load-balancer-controller -n kube-system --watch
 
 
-
 				 
 envsubst < controller-ingress.yaml | kubectl apply -f -
 				  
 envsubst < broker-ingress.yaml | kubectl apply -f -
 
-		  
 envsubst < server-netty-ingress.yaml | kubectl apply -f -
 		  
 envsubst < server-admin-ingress.yaml | kubectl apply -f -
+
+envsubst < zookeeper-admin-service.yaml | kubectl apply -f -
+
+envsubst < zookeeper-admin-ingress.yaml | kubectl apply -f -
 
 
 

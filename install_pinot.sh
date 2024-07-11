@@ -6,6 +6,7 @@ export EKS_CLUSTER_NAME=pinot
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="gb4-test/test-gb4-vpc"
 export ACCOUNT_ID=005651560631
+export S3_BUCKET_URI=s3://my.bucket/pinot-data/pinot-s3-example/controller-data
 export VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${VPC_NAME}" --query "Vpcs[0].VpcId" --output text)
 
 export PRIVATE_SUBNET_IDS=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" "Name=tag:aws-cdk:subnet-type,Values=Private" --query "Subnets[*].SubnetId" --output text) 
@@ -218,6 +219,48 @@ helm repo add pinot https://raw.githubusercontent.com/apache/pinot/master/helm
 kubectl create ns pinot-quickstart
 
 
+controller_extra_config=$(cat <<EOF
+pinot.set.instance.id.to.hostname=true
+controller.task.scheduler.enabled=true
+controller.enable.split.commit=true
+pinot.controller.storage.factory.class.s3=org.apache.pinot.plugin.filesystem.S3PinotFS
+pinot.controller.storage.factory.s3.region=$EKS_CLUSTER_REGION
+pinot.controller.segment.fetcher.protocols=file,http,s3
+pinot.controller.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
+EOF
+)
+
+
+
+server_extra_config=$(cat <<EOF
+pinot.set.instance.id.to.hostname=true
+pinot.server.instance.realtime.alloc.offheap=true
+pinot.query.server.port=7321
+pinot.query.runner.port=7732
+pinot.server.instance.enable.split.commit=true
+pinot.server.storage.factory.class.s3=org.apache.pinot.plugin.filesystem.S3PinotFS
+pinot.server.storage.factory.s3.region=$EKS_CLUSTER_REGION
+pinot.server.storage.factory.s3.httpclient.maxConnections=50
+pinot.server.storage.factory.s3.httpclient.socketTimeout=30s
+pinot.server.storage.factory.s3.httpclient.connectionTimeout=2s
+pinot.server.storage.factory.s3.httpclient.connectionTimeToLive=0s
+pinot.server.storage.factory.s3.httpclient.connectionAcquisitionTimeout=10s
+pinot.server.segment.fetcher.protocols=file,http,s3
+pinot.server.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
+	  
+EOF
+)
+
+
+minion_extra_config=$(cat <<EOF
+pinot.set.instance.id.to.hostname=true
+pinot.minion.storage.factory.class.s3=org.apache.pinot.plugin.filesystem.S3PinotFS
+pinot.minion.storage.factory.s3.region=$EKS_CLUSTER_REGION
+pinot.minion.segment.fetcher.protocols=file,http,s3
+pinot.minion.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
+EOF
+)
+
 helm install pinot pinot/pinot \
 -n pinot-quickstart \
 --set cluster.name=${EKS_CLUSTER_NAME} \
@@ -233,11 +276,8 @@ helm install pinot pinot/pinot \
 --set controller.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set controller.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=pinot \
 --set controller.external.enabled=false \
---set controller.storage.factory.class.s3=org.apache.pinot.plugin.filesystem.S3PinotFS \
---set controller.storage.factory.s3.region=$EKS_CLUSTER_REGION \
---set controller.segment.fetcher.protocols=file,http,s3 \
---set controller.storage.factory.s3.disableAcl=false \
---set controller.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher \
+--set controller.data.dir=$S3_BUCKET_URI \
+--set controller.extra.configs=$controller_extra_config \
 --set broker.replicaCount=3 \
 --set broker.resources.requests.cpu=1333m \
 --set broker.resources.requests.memory=5.33Gi \
@@ -260,16 +300,16 @@ helm install pinot pinot/pinot \
 --set server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
 --set server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=pinot \
---set server.storage.factory.class.s3=org.apache.pinot.plugin.filesystem.S3PinotFS \
---set server.storage.factory.s3.region=$EKS_CLUSTER_REGION \
---set server.storage.factory.s3.disableAcl=false \
---set server.storage.factory.s3.endpoint=http://minio:9000 \
---set server.segment.fetcher.protocols=file,http,s3 \
---set server.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher \
+--set server.extra.configs=$server_extra_config \
 --set minion.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
 --set minion.persistence.storageClass=gp2 \
 --set minion.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set minion.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=workers \
+--set minion.extra.configs=$minion_extra_config \--set minion.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
+--set minionStateless.persistence.storageClass=gp2 \
+--set minionStateless.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
+--set minionStateless.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=workers \
+--set minionStateless.extra.configs=$minion_extra_config \
 --set zookeeper.replicaCount=3 \
 --set zookeeper.resources.requests.cpu=1 \
 --set zookeeper.resources.requests.memory=2Gi \

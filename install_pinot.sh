@@ -140,7 +140,7 @@ json_input=$(jq -n \
       desiredSize: 3
     },
     subnets: $subnets,
-    instanceTypes: ["t3.xlarge"],
+    instanceTypes: ["t3.medium"],
     taints: [
       {
         key: "group",
@@ -222,11 +222,10 @@ kubectl create ns pinot-quickstart
 helm install pinot pinot/pinot \
 -n pinot-quickstart \
 --set cluster.name=${EKS_CLUSTER_NAME} \
---set server.replicaCount=2 \
+--set controller.replicaCount=3 \
+--set controller.resources.requests.cpu=1333m \
+--set controller.resources.requests.memory=5.33Gi \
 --set controller.persistence.storageClass=gp2 \
---set server.persistence.storageClass=gp2 \
---set minion.persistence.storageClass=gp2 \
---set zookeeper.persistence.storageClass=gp2 \
 --set controller.tolerations[0].key=group \
 --set controller.tolerations[0].value=pinot \
 --set controller.tolerations[0].operator=Equal \
@@ -234,6 +233,10 @@ helm install pinot pinot/pinot \
 --set controller.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
 --set controller.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set controller.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=pinot \
+--set controller.external.enabled=false \
+--set broker.replicaCount=3 \
+--set broker.resources.requests.cpu=1333m \
+--set broker.resources.requests.memory=5.33Gi \
 --set broker.tolerations[0].key=group \
 --set broker.tolerations[0].value=pinot \
 --set broker.tolerations[0].operator=Equal \
@@ -241,6 +244,11 @@ helm install pinot pinot/pinot \
 --set broker.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
 --set broker.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set broker.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=pinot \
+--set broker.external.enabled=false
+--set server.replicaCount=3 \
+--set server.resources.requests.cpu=1333m \
+--set server.resources.requests.memory=5.33Gi \
+--set server.persistence.storageClass=gp2 \
 --set server.tolerations[0].key=group \
 --set server.tolerations[0].operator=Equal \
 --set server.tolerations[0].value=pinot \
@@ -249,14 +257,19 @@ helm install pinot pinot/pinot \
 --set server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=pinot \
 --set minion.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
+--set minion.persistence.storageClass=gp2 \
 --set minion.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set minion.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=workers \
+--set zookeeper.replicaCount=3 \
+--set zookeeper.resources.requests.cpu=1 \
+--set zookeeper.resources.requests.memory=2Gi \
 --set zookeeper.tolerations[0].key=group \
 --set zookeeper.tolerations[0].value=zookeeper \
 --set zookeeper.tolerations[0].effect=NoSchedule \
+--set zookeeper.persistence.storageClass=gp2 \
 --set zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
 --set zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
---set zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=zookeeper
+--set zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=zookeeper \
 
 
 ### 

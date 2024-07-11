@@ -1,6 +1,7 @@
-###
-### Environment variables
-###
+echo ###
+echo ### Environment variables
+echo ###
+
 
 export EKS_CLUSTER_NAME=pinot
 export EKS_CLUSTER_REGION=us-east-1
@@ -18,9 +19,9 @@ echo "Private Subnet Ids"
 echo $PRIVATE_SUBNET_IDS
 
 
-###
-### Download kubectl
-###
+echo ###
+echo ### Download kubectl
+echo ###
 
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
@@ -29,9 +30,9 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 
-###
-### Download eksctl
-###
+echo ###
+echo ### Download eksctl
+echo ###
 
 
 # for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
@@ -47,9 +48,9 @@ tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
 
 sudo mv /tmp/eksctl /usr/local/bin
 
-### 
-### Create Cluster
-###
+echo ### 
+echo ### Create Cluster
+echo ###
 
 eksctl create cluster \
 --name ${EKS_CLUSTER_NAME} \
@@ -59,9 +60,9 @@ eksctl create cluster \
 --node-private-networking \
 --nodes 0
 
-### 
-### Create Node Groups
-### 
+echo ### 
+echo ### Create Node Groups
+echo ### 
 
 ROLE_NAME="${EKS_CLUSTER_NAME}EKSWorkerNodeRole"
 
@@ -187,9 +188,9 @@ aws eks create-nodegroup --cli-input-json "$json_input" --region "$EKS_CLUSTER_R
 
 
 
-### 
-### Add Ons
-### 
+echo ### 
+echo ### Add Ons
+echo ### 
 
 eksctl utils associate-iam-oidc-provider --region=${EKS_CLUSTER_REGION} --cluster=${EKS_CLUSTER_NAME} --approve
 
@@ -208,9 +209,9 @@ eksctl create addon --name aws-ebs-csi-driver --cluster ${EKS_CLUSTER_NAME} --se
 aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --region ${EKS_CLUSTER_REGION}
 
 
-### 
-### Deploy Pinot
-### 
+echo ### 
+echo ### Deploy Pinot
+echo ### 
 
 aws eks update-kubeconfig --region ${EKS_CLUSTER_REGION} --name ${EKS_CLUSTER_NAME}
 
@@ -322,17 +323,17 @@ helm install pinot pinot/pinot \
 --set zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=zookeeper \
 
 
-### 
-### Approve Certs
-### 
+echo ### 
+echo ### Approve Certs
+echo ### 
 
 kubectl get csr --no-headers --sort-by=.metadata.creationTimestamp | awk '{print $1}' | xargs -I {} kubectl certificate approve {}
 
 
 
-### 
-### Install Load Balancer Controller
-### 
+echo ### 
+echo ### Install Load Balancer Controller
+echo ### 
 
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
 
@@ -350,9 +351,9 @@ eksctl create iamserviceaccount \
   --approve
 
 
-### 
-### Add Load Balancer Routes
-### 
+echo ### 
+echo ### Add Load Balancer Routes
+echo ### 
 
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
 

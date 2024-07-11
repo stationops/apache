@@ -214,7 +214,6 @@ aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --region ${EKS_CLUSTER_REGIO
 aws eks update-kubeconfig --region ${EKS_CLUSTER_REGION} --name ${EKS_CLUSTER_NAME}
 
 
-
 helm repo add pinot https://raw.githubusercontent.com/apache/pinot/master/helm
 kubectl create ns pinot-quickstart
 
@@ -278,7 +277,6 @@ helm install pinot pinot/pinot \
 
 kubectl get csr --no-headers --sort-by=.metadata.creationTimestamp | awk '{print $1}' | xargs -I {} kubectl certificate approve {}
 
-kubernetes - kubectl exec/logs on GKE returns "remote error: tls: internal error" - Stack Overflow
 
 
 ### 

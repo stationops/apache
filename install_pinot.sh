@@ -233,6 +233,11 @@ helm install pinot pinot/pinot \
 --set controller.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set controller.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=pinot \
 --set controller.external.enabled=false \
+--set controller.storage.factory.class.s3=org.apache.pinot.plugin.filesystem.S3PinotFS \
+--set controller.storage.factory.s3.region=$EKS_CLUSTER_REGION \
+--set controller.segment.fetcher.protocols=file,http,s3 \
+--set controller.storage.factory.s3.disableAcl=false \
+--set controller.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher \
 --set broker.replicaCount=3 \
 --set broker.resources.requests.cpu=1333m \
 --set broker.resources.requests.memory=5.33Gi \
@@ -255,6 +260,12 @@ helm install pinot pinot/pinot \
 --set server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
 --set server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=pinot \
+--set server.storage.factory.class.s3=org.apache.pinot.plugin.filesystem.S3PinotFS \
+--set server.storage.factory.s3.region=$EKS_CLUSTER_REGION \
+--set server.storage.factory.s3.disableAcl=false \
+--set server.storage.factory.s3.endpoint=http://minio:9000 \
+--set server.segment.fetcher.protocols=file,http,s3 \
+--set server.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher \
 --set minion.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
 --set minion.persistence.storageClass=gp2 \
 --set minion.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \

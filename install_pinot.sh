@@ -269,6 +269,7 @@ helm install pinot pinot/pinot \
 --set controller.resources.requests.cpu=1333m \
 --set controller.resources.requests.memory=5.33Gi \
 --set controller.persistence.storageClass=gp2 \
+--set controller.persistence.size=100GB \
 --set controller.tolerations[0].key=group \
 --set controller.tolerations[0].value=pinot \
 --set controller.tolerations[0].operator=Equal \
@@ -294,6 +295,7 @@ helm install pinot pinot/pinot \
 --set server.resources.requests.cpu=1333m \
 --set server.resources.requests.memory=5.33Gi \
 --set server.persistence.storageClass=gp2 \
+--set server.persistence.size=200GB \
 --set server.tolerations[0].key=group \
 --set server.tolerations[0].operator=Equal \
 --set server.tolerations[0].value=pinot \
@@ -317,7 +319,6 @@ helm install pinot pinot/pinot \
 --set zookeeper.tolerations[0].key=group \
 --set zookeeper.tolerations[0].value=zookeeper \
 --set zookeeper.tolerations[0].effect=NoSchedule \
---set zookeeper.persistence.storageClass=gp2 \
 --set zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=alpha.eksctl.io/nodegroup-name \
 --set zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In \
 --set zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=zookeeper \

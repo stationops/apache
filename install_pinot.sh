@@ -344,14 +344,14 @@ aws iam create-policy \
     --policy-name AWSLoadBalancerControllerIAMPolicy \
     --policy-document file://iam_policy.json
 
-eksctl create iamserviceaccount \
-  --cluster=${EKS_CLUSTER_NAME} \
-  --namespace=kube-system \
-  --name=aws-load-balancer-controller \
-  --region=${EKS_CLUSTER_REGION} \
-  --role-name AmazonEKSLoadBalancerControllerRole \
-  --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
-  --approve
+#eksctl create iamserviceaccount \
+#  --cluster=${EKS_CLUSTER_NAME} \
+#  --namespace=kube-system \
+#  --name=aws-load-balancer-controller \
+#  --region=${EKS_CLUSTER_REGION} \
+#  --role-name AmazonEKSLoadBalancerControllerRole \
+#  --attach-policy-arn=arn:aws:iam::${ACCOUNT_ID}:policy/AWSLoadBalancerControllerIAMPolicy \
+#  --approve
 
 
 echo ### 

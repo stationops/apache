@@ -85,6 +85,7 @@ aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy 
 
 role_arn=$(aws iam get-role --role-name $ROLE_NAME --query 'Role.Arn' --output text)
 
@@ -205,6 +206,8 @@ eksctl create iamserviceaccount \
   --region ${EKS_CLUSTER_REGION}
 
 eksctl create addon --name aws-ebs-csi-driver --cluster ${EKS_CLUSTER_NAME} --service-account-role-arn arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/AmazonEKS_EBS_CSI_DriverRole_${EKS_CLUSTER_NAME} --region=${EKS_CLUSTER_REGION} --force
+aws eks create-addon --cluster ${EKS_CLUSTER_NAME} --addon-name amazon-cloudwatch-observability
+
 
 aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --region ${EKS_CLUSTER_REGION}
 

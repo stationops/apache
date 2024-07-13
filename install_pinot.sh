@@ -5,9 +5,8 @@ echo ###
 
 export EKS_CLUSTER_NAME=pinot5
 export EKS_CLUSTER_REGION=us-east-1
-export VPC_NAME="gb4-test/test-gb4-vpc"
+export VPC_NAME="gp5-test/test-gp5-vpc"
 export ACCOUNT_ID=005651560631
-export S3_BUCKET_URI=s3://my.bucket/pinot-data/pinot-s3-example/controller-data
 export VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${VPC_NAME}" --query "Vpcs[0].VpcId" --output text)
 
 export PRIVATE_SUBNET_IDS=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" "Name=tag:aws-cdk:subnet-type,Values=Private" --query "Subnets[*].SubnetId" --output text) 

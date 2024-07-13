@@ -222,7 +222,7 @@ helm repo add pinot https://raw.githubusercontent.com/apache/pinot/master/helm
 kubectl create ns pinot-quickstart
 
 
-helm install pinot pinot/pinot -n pinot-quickstart -f pinot-values.yaml
+envsubst < pinot-values.yaml | helm install pinot pinot/pinot -n pinot-quickstart -f -
 
 
 echo ### 

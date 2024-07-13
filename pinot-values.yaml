@@ -141,6 +141,9 @@ zookeeper:
     - key: group
       value: zookeeper
       effect: NoSchedule
+  persistence:
+    storageClass: gp2
+    size: 10GB    
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

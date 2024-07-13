@@ -32,6 +32,7 @@ controller:
     configs: |-
         pinot.set.instance.id.to.hostname=true
         controller.task.scheduler.enabled=true
+        controller.local.temp.dir=/tmp/pinot-tmp-data/
         controller.enable.split.commit=true
         pinot.controller.storage.factory.class.s3=org.apache.pinot.plugin.filesystem.S3PinotFS
         pinot.controller.storage.factory.s3.region=${EKS_CLUSTER_REGION}

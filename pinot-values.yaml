@@ -5,8 +5,8 @@ controller:
   replicaCount: 3
   resources:
     requests:
-      cpu: 1333m
-      memory: 5.33Gi
+      cpu: 1200m
+      memory: 5.20Gi
   persistence:
     storageClass: gp2
     size: 100Gi

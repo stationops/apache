@@ -41,8 +41,8 @@ broker:
   replicaCount: 3
   resources:
     requests:
-      cpu: 1333m
-      memory: 5.33Gi
+      cpu: 1200m
+      memory: 5.20Gi
   tolerations:
     - key: group
       value: pinot
@@ -64,8 +64,8 @@ server:
   replicaCount: 3
   resources:
     requests:
-      cpu: 1333m
-      memory: 5.33Gi
+      cpu: 1200m
+      memory: 5.20Gi
   persistence:
     storageClass: gp2
     size: 200Gi

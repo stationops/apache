@@ -3,7 +3,7 @@ echo ### Environment variables
 echo ###
 
 
-export EKS_CLUSTER_NAME=pinot
+export EKS_CLUSTER_NAME=pinot5
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="gb4-test/test-gb4-vpc"
 export ACCOUNT_ID=005651560631

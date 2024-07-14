@@ -1,5 +1,0 @@
-resources:
-  - ../base/cloudwatch-agent.yaml
-
-patchesStrategicMerge:
-  - patch-irsa.yaml

@@ -3,12 +3,12 @@ echo ### Environment variables
 echo ###
 
 
-export EKS_CLUSTER_NAME=pinot1
+export EKS_CLUSTER_NAME=pinot2
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="gp5-test/test-gp5-vpc"
 export ACCOUNT_ID=005651560631
 export VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${VPC_NAME}" --query "Vpcs[0].VpcId" --output text)
-
+export S3_BUCKET_URI=s3://pinot-prod-deepstore
 export PRIVATE_SUBNET_IDS=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" "Name=tag:aws-cdk:subnet-type,Values=Private" --query "Subnets[*].SubnetId" --output text) 
 
 export PRIVATE_SUBNET_IDS=$(echo $PRIVATE_SUBNET_IDS | tr ' ' ',')
@@ -205,7 +205,19 @@ eksctl create iamserviceaccount \
   --region ${EKS_CLUSTER_REGION}
 
 eksctl create addon --name aws-ebs-csi-driver --cluster ${EKS_CLUSTER_NAME} --service-account-role-arn arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/AmazonEKS_EBS_CSI_DriverRole_${EKS_CLUSTER_NAME} --region=${EKS_CLUSTER_REGION} --force
-aws eks create-addon --cluster ${EKS_CLUSTER_NAME} --addon-name amazon-cloudwatch-observability
+
+
+eksctl create iamserviceaccount \
+  --name cloudwatch-agent \
+  --namespace amazon-cloudwatch \
+  --cluster ${EKS_CLUSTER_NAME} \
+  --role-name Cloud_Watch_Agent_${EKS_CLUSTER_NAME} \
+  --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+  --role-only \
+  --region ${EKS_CLUSTER_REGION} \
+  --approve
+
+aws eks create-addon --addon-name amazon-cloudwatch-observability --cluster ${EKS_CLUSTER_NAME} --service-account-role-arn arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/Cloud_Watch_Agent_${EKS_CLUSTER_NAME} --region=${EKS_CLUSTER_REGION} --force
 
 
 aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --region ${EKS_CLUSTER_REGION}

@@ -1,0 +1,9 @@
+apiVersion: cloudwatch.aws.amazon.com/v1alpha1
+kind: AmazonCloudWatchAgent
+metadata:
+  name: cloudwatch-agent
+  namespace: amazon-cloudwatch
+spec:
+  env:
+    - name: RUN_WITH_IRSA
+      value: "true"

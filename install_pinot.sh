@@ -217,8 +217,9 @@ eksctl create iamserviceaccount \
   --region ${EKS_CLUSTER_REGION} \
   --approve
 
-aws eks create-addon --addon-name amazon-cloudwatch-observability --cluster ${EKS_CLUSTER_NAME} --service-account-role-arn arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/Cloud_Watch_Agent_${EKS_CLUSTER_NAME} --region=${EKS_CLUSTER_REGION} --force
+eksctl create addon --name amazon-cloudwatch-observability --cluster ${EKS_CLUSTER_NAME} --service-account-role-arn arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/Cloud_Watch_Agent_${EKS_CLUSTER_NAME} --region=${EKS_CLUSTER_REGION} --force
 
+# kubectl -n amazon-cloudwatch edit amazoncloudwatchagents.cloudwatch.aws.amazon.com 
 
 aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --region ${EKS_CLUSTER_REGION}
 

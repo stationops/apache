@@ -120,12 +120,23 @@ json_subnet_ids=$(echo "$PRIVATE_SUBNET_IDS" | jq -R 'split(",")')
 
 
 aws ec2 create-launch-template \
-    --launch-template-name pinot-launch-template-$EKS_CLUSTER_NAME \
+    --launch-template-name pinot-xlarge-launch-template-$EKS_CLUSTER_NAME \
     --version-description "Version 1" \
     --launch-template-data '{
         "InstanceType": "t3.xlarge",
         "MetadataOptions": {
-            "HttpTokens": "optional",
+            "HttpTokens": "required",
+            "HttpPutResponseHopLimit": 2
+        }
+    }'
+
+aws ec2 create-launch-template \
+    --launch-template-name pinot-large-launch-template-$EKS_CLUSTER_NAME \
+    --version-description "Version 1" \
+    --launch-template-data '{
+        "InstanceType": "t3.large",
+        "MetadataOptions": {
+            "HttpTokens": "required",
             "HttpPutResponseHopLimit": 2
         }
     }'
@@ -137,6 +148,7 @@ json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
   --arg nodegroupName "pinot" \
   --arg nodeRole "$role_arn" \
+  --arg templateName "pinot-xlarge-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
     clusterName: $clusterName,
@@ -149,10 +161,9 @@ json_input=$(jq -n \
     },
     subnets: $subnets,
 	launchTemplate: {
-      name: "pinot-launch-template-$EKS_CLUSTER_NAME",
+      name: $templateName,
       version: "1"
     },
-    instanceTypes: ["t3.xlarge"],
     taints: [
       {
         key: "group",
@@ -174,6 +185,7 @@ json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
   --arg nodegroupName "zookeeper" \
   --arg nodeRole "$role_arn" \
+  --arg templateName "pinot-large-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
     clusterName: $clusterName,
@@ -184,11 +196,11 @@ json_input=$(jq -n \
       maxSize: 3,
       desiredSize: 3
     },
-    subnets: $subnets,{
-      name: "pinot-launch-template-$EKS_CLUSTER_NAME",
+    subnets: $subnets,
+	launchTemplate: {
+      name: $templateName,
       version: "1"
     },
-    instanceTypes: ["t3.medium"],
     taints: [
       {
         key: "group",
@@ -211,6 +223,7 @@ json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
   --arg nodegroupName "workers" \
   --arg nodeRole "$role_arn" \
+  --arg templateName "pinot-large-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
     clusterName: $clusterName,
@@ -222,11 +235,10 @@ json_input=$(jq -n \
       desiredSize: 2
     },
     subnets: $subnets,
-	{
-      name: "pinot-launch-template-$EKS_CLUSTER_NAME",
+	launchTemplate: {
+      name: $templateName,
       version: "1"
     },
-    instanceTypes: ["t3.large"],
     taints: [
       
     ]

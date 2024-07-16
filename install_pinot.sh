@@ -8,7 +8,8 @@ export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="gp5-test/test-gp5-vpc"
 export ACCOUNT_ID=005651560631
 export VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${VPC_NAME}" --query "Vpcs[0].VpcId" --output text)
-export S3_BUCKET_URI=s3://pinot-prod-deepstore
+export S3_BUCKET_NAME="pinot-prod-deepstore"
+export S3_BUCKET_URI=s3://$S3_BUCKET_NAME
 export PRIVATE_SUBNET_IDS=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" "Name=tag:aws-cdk:subnet-type,Values=Private" --query "Subnets[*].SubnetId" --output text) 
 
 export PRIVATE_SUBNET_IDS=$(echo $PRIVATE_SUBNET_IDS | tr ' ' ',')
@@ -85,6 +86,30 @@ aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy 
+
+
+# Attach the custom inline policy for S3 read and write access
+aws iam put-role-policy --role-name $ROLE_NAME --policy-name S3ReadWritePolicy --policy-document "{
+    \"Version\": \"2012-10-17\",
+    \"Statement\": [
+        {
+            \"Effect\": \"Allow\",
+            \"Action\": [
+                \"s3:PutObject\",
+                \"s3:PutObjectAcl\",
+                \"s3:GetObject\"
+            ],
+            \"Resource\": \"arn:aws:s3:::${S3_BUCKET_NAME}/*\"
+        },
+        {
+            \"Effect\": \"Allow\",
+            \"Action\": [
+                \"s3:ListBucket\"
+            ],
+            \"Resource\": \"arn:aws:s3:::${S3_BUCKET_NAME}\"
+        }
+    ]
+}"
 
 role_arn=$(aws iam get-role --role-name $ROLE_NAME --query 'Role.Arn' --output text)
 

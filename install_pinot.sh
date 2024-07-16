@@ -3,7 +3,7 @@ echo ### Environment variables
 echo ###
 
 
-export EKS_CLUSTER_NAME=pinota5
+export EKS_CLUSTER_NAME=pinota6
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="gp5-test/test-gp5-vpc"
 export ACCOUNT_ID=005651560631
@@ -118,6 +118,20 @@ role_arn=$(aws iam get-role --role-name $ROLE_NAME --query 'Role.Arn' --output t
 
 json_subnet_ids=$(echo "$PRIVATE_SUBNET_IDS" | jq -R 'split(",")')
 
+
+aws ec2 create-launch-template \
+    --launch-template-name pinot-launch-template-$EKS_CLUSTER_NAME \
+    --version-description "Version 1" \
+    --launch-template-data '{
+        "InstanceType": "t3.xlarge",
+        "MetadataOptions": {
+            "HttpTokens": "optional",
+            "HttpPutResponseHopLimit": 2
+        }
+    }'
+
+
+
 # Create JSON input for aws eks create-nodegroup
 json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
@@ -134,6 +148,10 @@ json_input=$(jq -n \
       desiredSize: 3
     },
     subnets: $subnets,
+	launchTemplate: {
+      name: "pinot-launch-template-$EKS_CLUSTER_NAME",
+      version: "1"
+    },
     instanceTypes: ["t3.xlarge"],
     taints: [
       {
@@ -166,7 +184,10 @@ json_input=$(jq -n \
       maxSize: 3,
       desiredSize: 3
     },
-    subnets: $subnets,
+    subnets: $subnets,{
+      name: "pinot-launch-template-$EKS_CLUSTER_NAME",
+      version: "1"
+    },
     instanceTypes: ["t3.medium"],
     taints: [
       {
@@ -201,6 +222,10 @@ json_input=$(jq -n \
       desiredSize: 2
     },
     subnets: $subnets,
+	{
+      name: "pinot-launch-template-$EKS_CLUSTER_NAME",
+      version: "1"
+    },
     instanceTypes: ["t3.large"],
     taints: [
       

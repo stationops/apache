@@ -3,7 +3,7 @@ echo ### Environment variables
 echo ###
 
 
-export EKS_CLUSTER_NAME=pinot4
+export EKS_CLUSTER_NAME=pinot5
 export EKS_CLUSTER_REGION=us-east-1
 export VPC_NAME="gp5-test/test-gp5-vpc"
 export ACCOUNT_ID=005651560631
@@ -144,10 +144,6 @@ json_input=$(jq -n \
     ],
 	labels: {
       "alpha.eksctl.io/nodegroup-name": "pinot"
-    },
-	instanceMetadataOptions: {
-      httpPutResponseHopLimit: 2,
-      httpTokens: "optional"
     }
   }')
 
@@ -181,10 +177,6 @@ json_input=$(jq -n \
     ],
 	labels: {
       "alpha.eksctl.io/nodegroup-name": "zookeeper"
-    },
-	instanceMetadataOptions: {
-      httpPutResponseHopLimit: 2,
-      httpTokens: "optional"
     }
   }')
 
@@ -212,11 +204,7 @@ json_input=$(jq -n \
     instanceTypes: ["t3.large"],
     taints: [
       
-    ],
-	instanceMetadataOptions: {
-      httpPutResponseHopLimit: 2,
-      httpTokens: "optional"
-    }
+    ]
   }')
 
 # Run the aws eks create-nodegroup command

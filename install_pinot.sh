@@ -81,7 +81,7 @@ echo --- Download AWS MDK IAM jar
 echo ---
 
 # URL of the JAR file for version 2.2.0
-JAR_URL="https://repo1.maven.org/maven2/software/amazon/msk/aws-msk-iam-auth/2.2.0/aws-msk-iam-auth-2.2.0.jar"
+JAR_URL="https://github.com/aws/aws-msk-iam-auth/releases/download/v1.1.1/aws-msk-iam-auth-1.1.1-all.jar"
 
 # Namespace where the ConfigMap should be created
 NAMESPACE="pinot-quickstart"

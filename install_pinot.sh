@@ -1,6 +1,6 @@
-echo ###
-echo ### Environment variables
-echo ###
+echo ---
+echo --- Environment variables
+echo ---
 
 
 # Prompt the user for each value without defaults
@@ -29,9 +29,9 @@ echo "Private Subnet Ids"
 echo $PRIVATE_SUBNET_IDS
 
 
-echo ###
-echo ### Download kubectl
-echo ###
+echo ---
+echo --- Download kubectl
+echo ---
 
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
@@ -40,9 +40,9 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 
-echo ###
-echo ### Download eksctl
-echo ###
+echo ---
+echo --- Download eksctl
+echo ---
 
 
 # for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
@@ -58,9 +58,10 @@ tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
 
 sudo mv /tmp/eksctl /usr/local/bin
 
-echo ### 
-echo ### Create Cluster
-echo ###
+
+echo --- 
+echo --- Create Cluster
+echo ---
 
 eksctl create cluster \
 --name ${EKS_CLUSTER_NAME} \
@@ -70,9 +71,34 @@ eksctl create cluster \
 --node-private-networking \
 --nodes 0
 
-echo ### 
-echo ### Create Node Groups
-echo ### 
+aws eks update-kubeconfig --region ${EKS_CLUSTER_REGION} --name ${EKS_CLUSTER_NAME}
+
+
+echo --- 
+echo --- Download AWS MDK IAM jar
+echo ---
+
+# URL of the JAR file for version 2.2.0
+JAR_URL="https://repo1.maven.org/maven2/software/amazon/msk/aws-msk-iam-auth/2.2.0/aws-msk-iam-auth-2.2.0.jar"
+
+# Namespace where the ConfigMap should be created
+NAMESPACE="pinot-quickstart"
+
+# Download the JAR file
+curl -o aws-msk-iam-auth.jar $JAR_URL
+
+# Check if the download was successful
+if [ $? -ne 0 ]; then
+  echo "Failed to download the JAR file from $JAR_URL"
+  exit 1
+fi
+
+# Create a ConfigMap from the downloaded JAR file in the specified namespace
+kubectl create configmap aws-msk-iam-auth --from-file=aws-msk-iam-auth.jar -n $NAMESPACE
+
+echo --- 
+echo --- Create Node Groups
+echo --- 
 
 ROLE_NAME="${EKS_CLUSTER_NAME}EKSWorkerNodeRole"
 
@@ -260,9 +286,9 @@ aws eks create-nodegroup --cli-input-json "$json_input" --region "$EKS_CLUSTER_R
 
 
 
-echo ### 
-echo ### Add Ons
-echo ### 
+echo --- 
+echo --- Add Ons
+echo --- 
 
 eksctl utils associate-iam-oidc-provider --region=${EKS_CLUSTER_REGION} --cluster=${EKS_CLUSTER_NAME} --approve
 
@@ -303,9 +329,9 @@ kubectl annotate serviceaccount cloudwatch-agent \
 aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --region ${EKS_CLUSTER_REGION}
 
 
-echo ### 
-echo ### Deploy Pinot
-echo ### 
+echo --- 
+echo --- Deploy Pinot
+echo --- 
 
 aws eks update-kubeconfig --region ${EKS_CLUSTER_REGION} --name ${EKS_CLUSTER_NAME}
 
@@ -317,17 +343,17 @@ kubectl create ns pinot-quickstart
 envsubst < pinot-values.yaml | helm install pinot pinot/pinot -n pinot-quickstart -f -
 
 
-echo ### 
-echo ### Approve Certs
-echo ### 
+echo --- 
+echo --- Approve Certs
+echo --- 
 
 kubectl get csr --no-headers --sort-by=.metadata.creationTimestamp | awk '{print $1}' | xargs -I {} kubectl certificate approve {}
 
 
 
-echo ### 
-echo ### Install Load Balancer Controller
-echo ### 
+echo --- 
+echo --- Install Load Balancer Controller
+echo --- 
 
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
 
@@ -345,9 +371,9 @@ aws iam create-policy \
 #  --approve
 
 
-echo ### 
-echo ### Add Load Balancer Routes
-echo ### 
+echo --- 
+echo --- Add Load Balancer Routes
+echo --- 
 
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
 

@@ -24,6 +24,17 @@ controller:
                 operator: In
                 values:
                   - pinot
+  extraVolumes:
+    - name: aws-msk-iam-auth
+      configMap:
+        name: aws-msk-iam-auth
+  extraVolumeMounts:
+    - name: aws-msk-iam-auth
+      mountPath: /opt/pinot/lib/aws-msk-iam-auth.jar
+      subPath: aws-msk-iam-auth.jar
+  extraEnv:
+    - name: CLASSPATH
+      value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"                
   external:
     enabled: false
   data:
@@ -59,6 +70,17 @@ broker:
                 operator: In
                 values:
                   - pinot
+  extraVolumes:
+    - name: aws-msk-iam-auth
+      configMap:
+        name: aws-msk-iam-auth
+  extraVolumeMounts:
+    - name: aws-msk-iam-auth
+      mountPath: /opt/pinot/lib/aws-msk-iam-auth.jar
+      subPath: aws-msk-iam-auth.jar
+  extraEnv:
+    - name: CLASSPATH
+      value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"                
   external:
     enabled: false
 
@@ -85,6 +107,17 @@ server:
                 operator: In
                 values:
                   - pinot
+  extraVolumes:
+    - name: aws-msk-iam-auth
+      configMap:
+        name: aws-msk-iam-auth
+  extraVolumeMounts:
+    - name: aws-msk-iam-auth
+      mountPath: /opt/pinot/lib/aws-msk-iam-auth.jar
+      subPath: aws-msk-iam-auth.jar
+  extraEnv:
+    - name: CLASSPATH
+      value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"                      
   extra:
     configs: |-
         pinot.set.instance.id.to.hostname=true

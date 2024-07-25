@@ -3,15 +3,25 @@ echo ### Environment variables
 echo ###
 
 
-export EKS_CLUSTER_NAME=pinota7
-export EKS_CLUSTER_REGION=us-east-1
-export VPC_NAME="gp5-test/test-gp5-vpc"
-export ACCOUNT_ID=005651560631
+# Prompt the user for each value without defaults
+read -p "Enter the EKS Cluster Name: " EKS_CLUSTER_NAME
+read -p "Enter the EKS Cluster Region: " EKS_CLUSTER_REGION
+read -p "Enter the VPC Name: " VPC_NAME
+read -p "Enter the Account ID: " ACCOUNT_ID
+read -p "Enter the S3 Bucket Name: " S3_BUCKET_NAME
+
+# Export the variables
+export EKS_CLUSTER_NAME
+export EKS_CLUSTER_REGION
+export VPC_NAME
+export ACCOUNT_ID
+export S3_BUCKET_NAME
+
+
+
 export VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${VPC_NAME}" --query "Vpcs[0].VpcId" --output text)
-export S3_BUCKET_NAME="pinot-prod-deepstore"
 export S3_BUCKET_URI=s3://$S3_BUCKET_NAME
 export PRIVATE_SUBNET_IDS=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=${VPC_ID}" "Name=tag:aws-cdk:subnet-type,Values=Private" --query "Subnets[*].SubnetId" --output text) 
-
 export PRIVATE_SUBNET_IDS=$(echo $PRIVATE_SUBNET_IDS | tr ' ' ',')
 
 

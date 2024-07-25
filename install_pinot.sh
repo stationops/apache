@@ -73,6 +73,8 @@ eksctl create cluster \
 
 aws eks update-kubeconfig --region ${EKS_CLUSTER_REGION} --name ${EKS_CLUSTER_NAME}
 
+kubectl create ns pinot-quickstart
+
 
 echo --- 
 echo --- Download AWS MDK IAM jar
@@ -94,7 +96,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Create a ConfigMap from the downloaded JAR file in the specified namespace
-kubectl create configmap aws-msk-iam-auth --from-file=aws-msk-iam-auth.jar -n $NAMESPACE
+kubectl create configmap aws-msk-iam-auth --from-file=aws-msk-iam-auth.jar -n pinot-quickstart
 
 echo --- 
 echo --- Create Node Groups
@@ -337,7 +339,7 @@ aws eks update-kubeconfig --region ${EKS_CLUSTER_REGION} --name ${EKS_CLUSTER_NA
 
 
 helm repo add pinot https://raw.githubusercontent.com/apache/pinot/master/helm
-kubectl create ns pinot-quickstart
+
 
 
 envsubst < pinot-values.yaml | helm install pinot pinot/pinot -n pinot-quickstart -f -

@@ -65,8 +65,7 @@ broker:
               - key: alpha.eksctl.io/nodegroup-name
                 operator: In
                 values:
-                  - pinot
-  persistence:                  
+                  - pinot                
   extraEnv:
     - name: CLASSPATH
       value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"                

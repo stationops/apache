@@ -30,7 +30,7 @@ controller:
                   - pinot
   extraEnv:
     - name: CLASSPATH
-      value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"                
+      value: "/opt/pinot/lib/aws-msk-iam-auth-1.1.1-all.jar:$CLASSPATH"                
   external:
     enabled: false
   data:
@@ -68,7 +68,7 @@ broker:
                   - pinot                
   extraEnv:
     - name: CLASSPATH
-      value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"                
+      value: "/opt/pinot/lib/aws-msk-iam-auth-1.1.1-all.jar:$CLASSPATH"                
 external:
 enabled: false
 
@@ -83,7 +83,7 @@ server:
     size: 200Gi
   extraEnv:
     - name: CLASSPATH
-      value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"      
+      value: "/opt/pinot/lib/aws-msk-iam-auth-1.1.1-all.jar:$CLASSPATH"      
   tolerations:
     - key: group
       operator: Equal
@@ -100,7 +100,7 @@ server:
                   - pinot
   extraEnv:
     - name: CLASSPATH
-      value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"                      
+      value: "/opt/pinot/lib/aws-msk-iam-auth-1.1.1-all.jar:$CLASSPATH"                      
   extra:
     configs: |-
         pinot.set.instance.id.to.hostname=true

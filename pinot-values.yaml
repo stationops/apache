@@ -14,14 +14,6 @@ controller:
   persistence:
     storageClass: gp2
     size: 100Gi
-    extraVolumes:
-      - name: aws-msk-iam-auth
-        configMap:
-          name: aws-msk-iam-auth
-    extraVolumeMounts:
-      - name: aws-msk-iam-auth
-        mountPath: /opt/pinot/lib/aws-msk-iam-auth.jar
-        subPath: aws-msk-iam-auth.jar
   tolerations:
     - key: group
       value: pinot
@@ -75,14 +67,6 @@ broker:
                 values:
                   - pinot
   persistence:                  
-    extraVolumes:
-      - name: aws-msk-iam-auth
-        configMap:
-          name: aws-msk-iam-auth
-    extraVolumeMounts:
-      - name: aws-msk-iam-auth
-        mountPath: /opt/pinot/lib/aws-msk-iam-auth.jar
-        subPath: aws-msk-iam-auth.jar
   extraEnv:
     - name: CLASSPATH
       value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"                
@@ -98,14 +82,6 @@ server:
   persistence:
     storageClass: gp2
     size: 200Gi
-    extraVolumes:
-      - name: aws-msk-iam-auth
-        configMap:
-          name: aws-msk-iam-auth
-    extraVolumeMounts:
-      - name: aws-msk-iam-auth
-        mountPath: /opt/pinot/lib/aws-msk-iam-auth.jar
-        subPath: aws-msk-iam-auth.jar
   extraEnv:
     - name: CLASSPATH
       value: "/opt/pinot/lib/aws-msk-iam-auth.jar:$CLASSPATH"      

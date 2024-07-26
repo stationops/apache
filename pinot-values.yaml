@@ -1,3 +1,7 @@
+
+image:
+  repository: stationops/msk-pinot
+
 cluster:
   name: ${EKS_CLUSTER_NAME}
 

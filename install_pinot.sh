@@ -87,7 +87,7 @@ JAR_URL="https://github.com/aws/aws-msk-iam-auth/releases/download/v1.1.1/aws-ms
 NAMESPACE="pinot-quickstart"
 
 # Download the JAR file
-curl -o aws-msk-iam-auth.jar $JAR_URL
+curl -o aws-msk-iam-auth.jar -L $JAR_URL
 
 # Check if the download was successful
 if [ $? -ne 0 ]; then

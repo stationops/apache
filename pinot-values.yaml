@@ -1,6 +1,7 @@
 
 image:
-  repository: stationops/msk-pinot
+  repository: apachepinot/pinot
+  tag: 1.1.0
 
 cluster:
   name: ${EKS_CLUSTER_NAME}
@@ -27,10 +28,7 @@ controller:
               - key: alpha.eksctl.io/nodegroup-name
                 operator: In
                 values:
-                  - pinot
-  extraEnv:
-    - name: CLASSPATH
-      value: "/opt/pinot/lib/aws-msk-iam-auth-1.1.1-all.jar:$CLASSPATH"                
+                  - pinot      
   external:
     enabled: false
   data:
@@ -65,10 +63,7 @@ broker:
               - key: alpha.eksctl.io/nodegroup-name
                 operator: In
                 values:
-                  - pinot                
-  extraEnv:
-    - name: CLASSPATH
-      value: "/opt/pinot/lib/aws-msk-iam-auth-1.1.1-all.jar:$CLASSPATH"                
+                  - pinot                              
 external:
 enabled: false
 
@@ -80,10 +75,7 @@ server:
       memory: 4Gi
   persistence:
     storageClass: gp2
-    size: 200Gi
-  extraEnv:
-    - name: CLASSPATH
-      value: "/opt/pinot/lib/aws-msk-iam-auth-1.1.1-all.jar:$CLASSPATH"      
+    size: 200Gi   
   tolerations:
     - key: group
       operator: Equal
@@ -97,10 +89,7 @@ server:
               - key: alpha.eksctl.io/nodegroup-name
                 operator: In
                 values:
-                  - pinot
-  extraEnv:
-    - name: CLASSPATH
-      value: "/opt/pinot/lib/aws-msk-iam-auth-1.1.1-all.jar:$CLASSPATH"                      
+                  - pinot                   
   extra:
     configs: |-
         pinot.set.instance.id.to.hostname=true

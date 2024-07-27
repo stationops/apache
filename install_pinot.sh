@@ -77,28 +77,6 @@ kubectl create ns pinot-quickstart
 
 
 echo --- 
-echo --- Download AWS MDK IAM jar
-echo ---
-
-# URL of the JAR file for version 2.2.0
-JAR_URL="https://github.com/aws/aws-msk-iam-auth/releases/download/v1.1.1/aws-msk-iam-auth-1.1.1-all.jar"
-
-# Namespace where the ConfigMap should be created
-NAMESPACE="pinot-quickstart"
-
-# Download the JAR file
-curl -o aws-msk-iam-auth.jar -L $JAR_URL
-
-# Check if the download was successful
-if [ $? -ne 0 ]; then
-  echo "Failed to download the JAR file from $JAR_URL"
-  exit 1
-fi
-
-# Create a ConfigMap from the downloaded JAR file in the specified namespace
-kubectl create configmap aws-msk-iam-auth --from-file=aws-msk-iam-auth.jar -n pinot-quickstart
-
-echo --- 
 echo --- Create Node Groups
 echo --- 
 

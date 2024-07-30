@@ -10,8 +10,8 @@ controller:
   replicaCount: 3
   resources:
     requests:
-      cpu: 600m
-      memory: 3Gi
+      cpu: 500m
+      memory: 2Gi
   persistence:
     storageClass: gp2
     size: 100Gi
@@ -48,8 +48,8 @@ broker:
   replicaCount: 3
   resources:
     requests:
-      cpu: 600m
-      memory: 3Gi
+      cpu: 500m
+      memory: 2Gi
   tolerations:
     - key: group
       value: pinot
@@ -71,8 +71,8 @@ server:
   replicaCount: 3
   resources:
     requests:
-      cpu: 600m
-      memory: 3Gi
+      cpu: 500m
+      memory: 2Gi
   persistence:
     storageClass: gp2
     size: 200Gi   

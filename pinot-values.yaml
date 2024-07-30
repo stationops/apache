@@ -11,7 +11,7 @@ controller:
   resources:
     requests:
       cpu: 400m
-      memory: 1.7Gi
+      memory: 1.5Gi
   persistence:
     storageClass: gp2
     size: 100Gi
@@ -49,7 +49,7 @@ broker:
   resources:
     requests:
       cpu: 400m
-      memory: 1.7Gi
+      memory: 1.5Gi
   tolerations:
     - key: group
       value: pinot
@@ -72,7 +72,7 @@ server:
   resources:
     requests:
       cpu: 400m
-      memory: 1.7Gi
+      memory: 1.5Gi
   persistence:
     storageClass: gp2
     size: 200Gi   

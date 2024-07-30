@@ -156,15 +156,26 @@ aws ec2 create-launch-template \
             "HttpPutResponseHopLimit": 2
         }
     }'
+	
+aws ec2 create-launch-template \
+    --launch-template-name pinot-medium-launch-template-$EKS_CLUSTER_NAME \
+    --version-description "Version 1" \
+    --launch-template-data '{
+        "InstanceType": "t3.medium",
+        "MetadataOptions": {
+            "HttpTokens": "required",
+            "HttpPutResponseHopLimit": 2
+        }
+    }'
 
 
 
 # Create JSON input for aws eks create-nodegroup
 json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
-  --arg nodegroupName "pinot" \
+  --arg nodegroupName "pinot-large" \
   --arg nodeRole "$role_arn" \
-  --arg templateName "pinot-xlarge-launch-template-$EKS_CLUSTER_NAME" \
+  --arg templateName "pinot-large-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
     clusterName: $clusterName,
@@ -199,9 +210,9 @@ aws eks create-nodegroup --cli-input-json "$json_input" --region "$EKS_CLUSTER_R
 # Create JSON input for aws eks create-nodegroup
 json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
-  --arg nodegroupName "zookeeper" \
+  --arg nodegroupName "zookeeper-medium" \
   --arg nodeRole "$role_arn" \
-  --arg templateName "pinot-large-launch-template-$EKS_CLUSTER_NAME" \
+  --arg templateName "pinot-medium-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
     clusterName: $clusterName,
@@ -237,9 +248,9 @@ aws eks create-nodegroup --cli-input-json "$json_input" --region "$EKS_CLUSTER_R
 # Create JSON input for aws eks create-nodegroup
 json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
-  --arg nodegroupName "workers" \
+  --arg nodegroupName "workers-medium" \
   --arg nodeRole "$role_arn" \
-  --arg templateName "pinot-large-launch-template-$EKS_CLUSTER_NAME" \
+  --arg templateName "pinot-medium-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
     clusterName: $clusterName,
@@ -248,7 +259,7 @@ json_input=$(jq -n \
     scalingConfig: {
       minSize: 1,
       maxSize: 2,
-      desiredSize: 2
+      desiredSize: 1
     },
     subnets: $subnets,
 	launchTemplate: {

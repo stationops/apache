@@ -10,7 +10,7 @@ controller:
   replicaCount: 3
   resources:
     requests:
-      cpu: 500m
+      cpu: 400m
       memory: 2Gi
   persistence:
     storageClass: gp2
@@ -48,7 +48,7 @@ broker:
   replicaCount: 3
   resources:
     requests:
-      cpu: 500m
+      cpu: 400m
       memory: 2Gi
   tolerations:
     - key: group
@@ -71,7 +71,7 @@ server:
   replicaCount: 3
   resources:
     requests:
-      cpu: 500m
+      cpu: 400m
       memory: 2Gi
   persistence:
     storageClass: gp2

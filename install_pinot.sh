@@ -113,7 +113,8 @@ aws iam put-role-policy --role-name $ROLE_NAME --policy-name S3ReadWritePolicy -
             \"Action\": [
                 \"s3:PutObject\",
                 \"s3:PutObjectAcl\",
-                \"s3:GetObject\"
+                \"s3:GetObject\",
+		\"s3:DeleteObject\"
             ],
             \"Resource\": \"arn:aws:s3:::${S3_BUCKET_NAME}/*\"
         },

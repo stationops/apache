@@ -45,6 +45,8 @@ controller:
         pinot.controller.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
 
 broker:
+  probes:
+    livenessEnabled: true
   replicaCount: 3
   resources:
     requests:
@@ -68,6 +70,8 @@ external:
     enabled: false
 
 server:
+  probes:
+    livenessEnabled: true
   replicaCount: 3
   resources:
     requests:

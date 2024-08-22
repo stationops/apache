@@ -113,7 +113,8 @@ aws iam put-role-policy --role-name $ROLE_NAME --policy-name S3ReadWritePolicy -
             \"Action\": [
                 \"s3:PutObject\",
                 \"s3:PutObjectAcl\",
-                \"s3:GetObject\"
+                \"s3:GetObject\",
+		\"s3:DeleteObject\"
             ],
             \"Resource\": \"arn:aws:s3:::${S3_BUCKET_NAME}/*\"
         },
@@ -136,7 +137,7 @@ json_subnet_ids=$(echo "$PRIVATE_SUBNET_IDS" | jq -R 'split(",")')
 
 
 aws ec2 create-launch-template \
-    --launch-template-name pinot-xlarge-launch-template-$EKS_CLUSTER_NAME \
+    --launch-template-name pinot-launch-template-$EKS_CLUSTER_NAME \
     --version-description "Version 1" \
     --launch-template-data '{
         "InstanceType": "t3.xlarge",
@@ -147,10 +148,10 @@ aws ec2 create-launch-template \
     }'
 
 aws ec2 create-launch-template \
-    --launch-template-name pinot-large-launch-template-$EKS_CLUSTER_NAME \
+    --launch-template-name zookeeper-launch-template-$EKS_CLUSTER_NAME \
     --version-description "Version 1" \
     --launch-template-data '{
-        "InstanceType": "t3.large",
+        "InstanceType": "t3.medium",
         "MetadataOptions": {
             "HttpTokens": "required",
             "HttpPutResponseHopLimit": 2
@@ -158,7 +159,7 @@ aws ec2 create-launch-template \
     }'
 	
 aws ec2 create-launch-template \
-    --launch-template-name pinot-medium-launch-template-$EKS_CLUSTER_NAME \
+    --launch-template-name workers-launch-template-$EKS_CLUSTER_NAME \
     --version-description "Version 1" \
     --launch-template-data '{
         "InstanceType": "t3.medium",
@@ -173,9 +174,9 @@ aws ec2 create-launch-template \
 # Create JSON input for aws eks create-nodegroup
 json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
-  --arg nodegroupName "pinot-large" \
+  --arg nodegroupName "pinot" \
   --arg nodeRole "$role_arn" \
-  --arg templateName "pinot-large-launch-template-$EKS_CLUSTER_NAME" \
+  --arg templateName "pinot-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
     clusterName: $clusterName,
@@ -210,9 +211,9 @@ aws eks create-nodegroup --cli-input-json "$json_input" --region "$EKS_CLUSTER_R
 # Create JSON input for aws eks create-nodegroup
 json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
-  --arg nodegroupName "zookeeper-medium" \
+  --arg nodegroupName "zookeeper" \
   --arg nodeRole "$role_arn" \
-  --arg templateName "pinot-medium-launch-template-$EKS_CLUSTER_NAME" \
+  --arg templateName "zookeeper-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
     clusterName: $clusterName,
@@ -248,9 +249,9 @@ aws eks create-nodegroup --cli-input-json "$json_input" --region "$EKS_CLUSTER_R
 # Create JSON input for aws eks create-nodegroup
 json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
-  --arg nodegroupName "workers-medium" \
+  --arg nodegroupName "workers" \
   --arg nodeRole "$role_arn" \
-  --arg templateName "pinot-medium-launch-template-$EKS_CLUSTER_NAME" \
+  --arg templateName "workers-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
     clusterName: $clusterName,

@@ -111,6 +111,7 @@ server:
         pinot.server.storage.factory.s3.httpclient.connectionAcquisitionTimeout=10s
         pinot.server.segment.fetcher.protocols=file,http,s3
         pinot.server.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
+        pinot.offheap.buffer.factory=org.apache.pinot.segment.spi.memory.unsafe.UnsafePinotBufferFactory
 
 minion:
   persistence:

@@ -76,11 +76,11 @@ server:
   resources:
     requests:
       cpu: 1000m
-      memory: 16Gi
+      memory: 4Gi
   persistence:
     storageClass: gp2
-    size: 300Gi   
-  jvmOpts: "-Xms512M -Xmx12G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xlog:gc*:file=/opt/pinot/gc-pinot-server.log"  
+    size: 200Gi   
+  jvmOpts: "-Xms512M -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xlog:gc*:file=/opt/pinot/gc-pinot-server.log"  
   tolerations:
     - key: group
       operator: Equal

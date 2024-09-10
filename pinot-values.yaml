@@ -79,7 +79,7 @@ server:
       memory: 16Gi
   persistence:
     storageClass: gp2
-    size: 200Gi   
+    size: 300Gi   
   jvmOpts: "-Xms512M -Xmx12G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xlog:gc*:file=/opt/pinot/gc-pinot-server.log"  
   tolerations:
     - key: group

@@ -140,7 +140,7 @@ aws ec2 create-launch-template \
     --launch-template-name pinot-launch-template-$EKS_CLUSTER_NAME \
     --version-description "Version 1" \
     --launch-template-data '{
-        "InstanceType": "t3.xlarge",
+        "InstanceType": "t3.2xlarge",
         "MetadataOptions": {
             "HttpTokens": "required",
             "HttpPutResponseHopLimit": 2

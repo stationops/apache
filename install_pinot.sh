@@ -9,7 +9,8 @@ read -p "Enter the EKS Cluster Region: " EKS_CLUSTER_REGION
 read -p "Enter the VPC Name: " VPC_NAME
 read -p "Enter the Account ID: " ACCOUNT_ID
 read -p "Enter the S3 Bucket Name: " S3_BUCKET_NAME
-read -p "Enter the S3 Bucket Name: " PINOT_VALUES_FILE
+read -p "Enter the Pinot Values File: " PINOT_VALUES_FILE
+read -p "Enter the Pinot Replica number: " PINOT_REPLICAS
 
 # Export the variables
 export EKS_CLUSTER_NAME
@@ -18,6 +19,7 @@ export VPC_NAME
 export ACCOUNT_ID
 export S3_BUCKET_NAME
 export PINOT_VALUES_FILE
+export PINOT_REPLICAS
 
 
 
@@ -187,7 +189,7 @@ json_input=$(jq -n \
     scalingConfig: {
       minSize: 1,
       maxSize: 3,
-      desiredSize: 3
+      desiredSize: $PINOT_REPLICAS
     },
     subnets: $subnets,
 	launchTemplate: {
@@ -224,7 +226,7 @@ json_input=$(jq -n \
     scalingConfig: {
       minSize: 1,
       maxSize: 3,
-      desiredSize: 3
+      desiredSize: $PINOT_REPLICAS
     },
     subnets: $subnets,
 	launchTemplate: {

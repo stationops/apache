@@ -9,6 +9,7 @@ read -p "Enter the EKS Cluster Region: " EKS_CLUSTER_REGION
 read -p "Enter the VPC Name: " VPC_NAME
 read -p "Enter the Account ID: " ACCOUNT_ID
 read -p "Enter the S3 Bucket Name: " S3_BUCKET_NAME
+read -p "Enter the S3 Bucket Name: " PINOT_VALUES_FILE
 
 # Export the variables
 export EKS_CLUSTER_NAME
@@ -16,6 +17,7 @@ export EKS_CLUSTER_REGION
 export VPC_NAME
 export ACCOUNT_ID
 export S3_BUCKET_NAME
+export PINOT_VALUES_FILE
 
 
 
@@ -332,7 +334,10 @@ helm repo add pinot https://raw.githubusercontent.com/apache/pinot/master/helm
 
 
 
-envsubst < pinot-values.yaml | helm install pinot pinot/pinot -n pinot-quickstart -f -
+--envsubst < pinot-values.yaml | helm install pinot pinot/pinot -n pinot-quickstart -f -
+
+cat "$PINOT_VALUES_FILE" | envsubst | helm install pinot pinot/pinot -n pinot-quickstart -f -
+
 
 
 echo --- 

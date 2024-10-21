@@ -79,6 +79,11 @@ aws eks update-kubeconfig --region ${EKS_CLUSTER_REGION} --name ${EKS_CLUSTER_NA
 
 kubectl create ns pinot-quickstart
 
+kubectl label namespace pinot-quickstart app.kubernetes.io/managed-by=Helm
+kubectl annotate namespace pinot-quickstart meta.helm.sh/release-name=pinot
+kubectl annotate namespace pinot-quickstart meta.helm.sh/release-namespace=pinot-quickstart
+
+
 
 echo --- 
 echo --- Create Node Groups

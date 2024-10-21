@@ -336,7 +336,7 @@ helm repo add pinot https://raw.githubusercontent.com/apache/pinot/master/helm
 
 
 
---envsubst < pinot-values.yaml | helm install pinot pinot/pinot -n pinot-quickstart -f -
+--- envsubst < pinot-values.yaml | helm install pinot pinot/pinot -n pinot-quickstart -f -
 
 cat "$PINOT_VALUES_FILE" | envsubst | helm install pinot pinot/pinot -n pinot-quickstart -f -
 

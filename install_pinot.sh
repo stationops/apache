@@ -180,6 +180,7 @@ json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
   --arg nodegroupName "pinot" \
   --arg nodeRole "$role_arn" \
+  --arg PINOT_REPLICAS "$PINOT_REPLICAS" \
   --arg templateName "pinot-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{
@@ -217,6 +218,7 @@ json_input=$(jq -n \
   --arg clusterName "$EKS_CLUSTER_NAME" \
   --arg nodegroupName "zookeeper" \
   --arg nodeRole "$role_arn" \
+  --arg PINOT_REPLICAS "$PINOT_REPLICAS" \
   --arg templateName "zookeeper-launch-template-$EKS_CLUSTER_NAME" \
   --argjson subnets "$json_subnet_ids" \
   '{

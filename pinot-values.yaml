@@ -122,6 +122,7 @@ server:
         pinot.server.instance.kafka.connection.timeout=30000  # 30 seconds for connection timeout
         pinot.server.instance.segment.loader.timeout=300000  # 5 minutes
         pinot.server.instance.kafka.fetch.offset.max.wait.time=20000   # 20 seconds
+        stream.kafka.fetch.timeout.millis=2000
 
 minion:
   persistence:

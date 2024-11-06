@@ -78,8 +78,8 @@ server:
   replicaCount: 3
   resources:
     requests:
-      cpu: 1600m
-      memory: 4Gi
+      cpu: 5000m
+      memory: 10Gi
   persistence:
     storageClass: gp2
     size: 200Gi   

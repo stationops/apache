@@ -50,7 +50,7 @@ broker:
   replicaCount: 3
   resources:
     requests:
-      cpu: 1000m
+      cpu: 600m
       memory: 4Gi
   tolerations:
     - key: group
@@ -78,7 +78,7 @@ server:
   replicaCount: 3
   resources:
     requests:
-      cpu: 1000m
+      cpu: 1600m
       memory: 4Gi
   persistence:
     storageClass: gp2

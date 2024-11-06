@@ -72,6 +72,8 @@ broker:
 server:
   probes:
     livenessEnabled: true
+    liveness:
+      timeoutSeconds: 120  
   replicaCount: 3
   resources:
     requests:

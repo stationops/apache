@@ -74,6 +74,7 @@ server:
     livenessEnabled: true
     liveness:
       timeoutSeconds: 1200  
+      initialDelaySeconds: 3600
   replicaCount: 3
   resources:
     requests:

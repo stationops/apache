@@ -73,7 +73,7 @@ server:
   probes:
     livenessEnabled: true
     liveness:
-      timeoutSeconds: 520  
+      timeoutSeconds: 1200  
   replicaCount: 3
   resources:
     requests:

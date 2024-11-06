@@ -43,6 +43,8 @@ controller:
         pinot.controller.storage.factory.s3.region=${EKS_CLUSTER_REGION}
         pinot.controller.segment.fetcher.protocols=file,http,s3
         pinot.controller.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
+        pinot.controller.segment.commit.timeout=300000  # 5 minutes
+        pinot.controller.segment.completion.retry.interval=60000  # 1 minute
 
 broker:
   probes:
@@ -114,6 +116,11 @@ server:
         pinot.server.segment.fetcher.protocols=file,http,s3
         pinot.server.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
         pinot.offheap.buffer.factory=org.apache.pinot.segment.spi.memory.unsafe.UnsafePinotBufferFactory
+        pinot.server.instance.realtime.segment.completion.max.duration=300000  # 5 minutes
+        pinot.server.instance.realtime.segment.completion.retry.interval=60000  # 1 minute
+        pinot.server.instance.kafka.fetch.offset.timeout=15000  # 15 seconds for offset fetch
+        pinot.server.instance.kafka.connection.timeout=30000  # 30 seconds for connection timeout
+        pinot.server.instance.segment.loader.timeout=300000  # 5 minutes
 
 minion:
   persistence:

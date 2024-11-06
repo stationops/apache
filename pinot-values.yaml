@@ -72,14 +72,17 @@ broker:
 server:
   probes:
     livenessEnabled: true
+    liveness:
+      timeoutSeconds: 120  
   replicaCount: 3
   resources:
     requests:
       cpu: 1000m
-      memory: 8Gi
+      memory: 4Gi
   persistence:
     storageClass: gp2
-    size: 200Gi   
+    size: 600Gi   
+  jvmOpts: "-Xms512M -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xlog:gc*:file=/opt/pinot/gc-pinot-server.log"  
   tolerations:
     - key: group
       operator: Equal
@@ -110,6 +113,7 @@ server:
         pinot.server.storage.factory.s3.httpclient.connectionAcquisitionTimeout=10s
         pinot.server.segment.fetcher.protocols=file,http,s3
         pinot.server.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
+        pinot.offheap.buffer.factory=org.apache.pinot.segment.spi.memory.unsafe.UnsafePinotBufferFactory
 
 minion:
   persistence:

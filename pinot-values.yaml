@@ -43,8 +43,6 @@ controller:
         pinot.controller.storage.factory.s3.region=${EKS_CLUSTER_REGION}
         pinot.controller.segment.fetcher.protocols=file,http,s3
         pinot.controller.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
-        pinot.controller.segment.commit.timeout=300000  # 5 minutes
-        pinot.controller.segment.completion.retry.interval=60000  # 1 minute
 
 broker:
   probes:
@@ -74,17 +72,14 @@ broker:
 server:
   probes:
     livenessEnabled: true
-    liveness:
-      timeoutSeconds: 120
   replicaCount: 3
   resources:
     requests:
       cpu: 1000m
-      memory: 4Gi
+      memory: 8Gi
   persistence:
     storageClass: gp2
     size: 200Gi   
-  jvmOpts: "-Xms1G -Xmx25G -XX:MaxMetaspaceSize=512M -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+DisableExplicitGC -Xlog:gc*:file=/opt/pinot/gc-pinot-server.log -Dnashorn.args=--no-deprecation-warning" 
   tolerations:
     - key: group
       operator: Equal
@@ -115,14 +110,6 @@ server:
         pinot.server.storage.factory.s3.httpclient.connectionAcquisitionTimeout=10s
         pinot.server.segment.fetcher.protocols=file,http,s3
         pinot.server.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
-        pinot.offheap.buffer.factory=org.apache.pinot.segment.spi.memory.unsafe.UnsafePinotBufferFactory
-        pinot.server.instance.realtime.segment.completion.max.duration=300000  # 5 minutes
-        pinot.server.instance.realtime.segment.completion.retry.interval=60000  # 1 minute
-        pinot.server.instance.kafka.fetch.offset.timeout=15000  # 15 seconds for offset fetch
-        pinot.server.instance.kafka.connection.timeout=30000  # 30 seconds for connection timeout
-        pinot.server.instance.segment.loader.timeout=300000  # 5 minutes
-        pinot.server.instance.kafka.fetch.offset.max.wait.time=20000   # 20 seconds
-        stream.kafka.fetch.timeout.millis=2000
 
 minion:
   persistence:

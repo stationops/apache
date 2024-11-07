@@ -152,8 +152,8 @@ zookeeper:
   replicaCount: 3
   resources:
     requests:
-      cpu: 450m
-      memory: 0.9Gi
+      cpu: 1
+      memory: 2Gi
   tolerations:
     - key: group
       value: zookeeper

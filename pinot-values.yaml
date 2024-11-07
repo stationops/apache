@@ -115,6 +115,7 @@ server:
         pinot.server.segment.fetcher.protocols=file,http,s3
         pinot.server.segment.fetcher.s3.class=org.apache.pinot.common.utils.fetcher.PinotFSSegmentFetcher
         pinot.offheap.buffer.factory=org.apache.pinot.segment.spi.memory.unsafe.UnsafePinotBufferFactory
+        pinot.server.instance.segment.load.mode=MMAP
 
 minion:
   persistence:

@@ -11,7 +11,7 @@ controller:
   resources:
     requests:
       cpu: 1000m
-      memory: 2Gi
+      memory: 6Gi
   persistence:
     storageClass: gp2
     size: 100Gi
@@ -51,7 +51,7 @@ broker:
   resources:
     requests:
       cpu: 1000m
-      memory: 2Gi
+      memory: 6Gi
   tolerations:
     - key: group
       value: pinot
@@ -78,12 +78,12 @@ server:
   replicaCount: 3
   resources:
     requests:
-      cpu: 1000m
-      memory: 8Gi
+      cpu: 3000m
+      memory: 16Gi
   persistence:
     storageClass: gp2
     size: 200Gi   
-  jvmOpts: "-Xms512M -Xmx8G -XX:+UseG1GC -XX:MaxGCPauseMillis=200  -Xlog:gc*:file=/opt/pinot/gc-pinot-server.log"  
+  jvmOpts: "-Xms512M -Xmx16G -XX:+UseG1GC -XX:MaxGCPauseMillis=200  -Xlog:gc*:file=/opt/pinot/gc-pinot-server.log"  
   tolerations:
     - key: group
       operator: Equal

@@ -155,7 +155,7 @@ zookeeper:
   resources:
     requests:
       cpu: 1
-      memory: 2Gi
+      memory: 1.5Gi
   tolerations:
     - key: group
       value: zookeeper

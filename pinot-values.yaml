@@ -78,7 +78,7 @@ server:
   resources:
     requests:
       cpu: 1500m
-      memory: 13Gi
+      memory: 5Gi
   persistence:
     storageClass: gp2
     size: 200Gi   

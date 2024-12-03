@@ -50,7 +50,7 @@ broker:
   replicaCount: 3
   resources:
     requests:
-      cpu: 500m
+      cpu: 400m
       memory: 1Gi
   tolerations:
     - key: group
